@@ -24,6 +24,8 @@ public class Placing : MonoBehaviour
             if (Physics.Raycast(ray, out hitInfo))
             {
                 objectToPlace.position = hitInfo.point;
+                //objectToPlace.position = hitInfo.point = Vector3.MoveTowards(objectToPlace.position, hitInfo.point, 50);
+                
                 objectToPlace.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
             }
         }
