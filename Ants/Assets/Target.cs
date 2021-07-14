@@ -6,6 +6,7 @@ public class Target : MonoBehaviour
 {
     public enum Direction { Down, Right, Left, Forward, Back };
 
+
     [SerializeField] Camera gameCamera;
     [SerializeField] Transform targetMesh;
 
@@ -16,6 +17,7 @@ public class Target : MonoBehaviour
     void Start()
     {
         UpdateOriginRays();
+        targetPos = targetMesh.position;
     }
 
     // Update is called once per frame
