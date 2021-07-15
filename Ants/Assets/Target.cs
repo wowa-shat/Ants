@@ -8,7 +8,7 @@ public class Target : MonoBehaviour
 
 
     [SerializeField] Camera gameCamera;
-    [SerializeField] Transform targetMesh;
+    public Transform targetMesh;
 
     public Vector3 targetPos { get; private set; }
     public OriginRay[] oRays { get; private set; } = new OriginRay[5];

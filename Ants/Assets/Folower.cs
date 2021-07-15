@@ -6,8 +6,10 @@ public class Folower : MonoBehaviour
 {
     [SerializeField] Camera gameCamera;
     [SerializeField] Target target;
+    [SerializeField] GameObject lookToTarget;
 
     RaycastHit downHitInfo;
+    RaycastHit rayToTargetHitInfo;
 
     Vector3 currentPos;
     Vector3 targetPos;
@@ -16,14 +18,14 @@ public class Folower : MonoBehaviour
     void Start()
     {
         currentPos = transform.position;
-        targetPos = target.targetPos;
+        targetPos = target.targetMesh.position;
     }
 
     // Update is called once per frame
     void Update()
     {
         currentPos = transform.position;
-        targetPos = target.targetPos;
+        targetPos = target.targetMesh.position;
 
         Ray downRay = new Ray(transform.position, -transform.up);
         if(Physics.Raycast(downRay, out downHitInfo, 1))
@@ -41,13 +43,18 @@ public class Folower : MonoBehaviour
             if(Vector3.Distance(currentPos, targetPos) > 0.5f)
             {
                 //looks at the target on the x and z axes
-                targetPos.y = currentPos.y;
-                transform.LookAt(targetPos);
+                Vector3 xztargetPos = targetPos;
+                xztargetPos.y = currentPos.y;
+                transform.LookAt(xztargetPos);
             }
 
             print("Ant down hit: " + downHitInfo.collider.name);
         }
         Debug.DrawRay(downRay.origin, downRay.direction, Color.red);
+
+        lookToTarget.transform.LookAt(targetPos);
+        Ray rayToTarget = new Ray(lookToTarget.transform.position, lookToTarget.transform.forward);
+        Debug.DrawRay(rayToTarget.origin, rayToTarget.direction * 100, Color.blue);
 
         //Ray forwardRay = new Ray(transform.position, transform.forward);
         //RaycastHit forwardHitInfo;
