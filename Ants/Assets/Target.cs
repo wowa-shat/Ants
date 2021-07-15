@@ -3,75 +3,76 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Target : MonoBehaviour
-{
-    public enum Direction { Down, Right, Left, Forward, Back };
-
+{    public enum Direction { Down, Right, Left, Forward, Back };
 
     [SerializeField] Camera gameCamera;
-    public Transform targetMesh;
+    [SerializeField] Transform targetMesh;
+    [SerializeField] LayerMask mouseRayLayerMask;
 
-    public Vector3 targetPos { get; private set; }
-    public OriginRay[] oRays { get; private set; } = new OriginRay[5];
+    public Dictionary<Direction, OriginRay> raysDict { get; private set; } = new Dictionary<Direction, OriginRay>();
+
+    public Vector3 pos { get; private set; }
+    public Collider targetCollider { get; private set; }
 
     // Start is called before the first frame update
     void Start()
     {
-        UpdateOriginRays();
-        targetPos = targetMesh.position;
+        UpdateRays();
+        pos = targetMesh.position;
+        targetCollider = targetMesh.gameObject.GetComponent<BoxCollider>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Ray ray = gameCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
+        Ray mouseRay = gameCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit mouseRayHitInfo;
 
+        //replace target
         if (Input.GetMouseButtonDown(0))
         {
-            if (Physics.Raycast(ray, out hitInfo))
+            if (Physics.Raycast(mouseRay, out mouseRayHitInfo, 1000, mouseRayLayerMask))
             {
-                transform.position = hitInfo.point;
-                targetPos = targetMesh.position;
-                transform.rotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+                transform.position = mouseRayHitInfo.point;
+                pos = targetMesh.position;
+                transform.rotation = Quaternion.FromToRotation(Vector3.up, mouseRayHitInfo.normal);
 
-                UpdateOriginRays();
+                UpdateRays();
             }
         }
 
-        if(Physics.Raycast(oRays[0].ray, out oRays[0].hitInfo))
+        if(Physics.Raycast(raysDict[Direction.Down].ray, out raysDict[Direction.Down].hitInfo))
         {
-            print("Target down hit: " + oRays[0].hitInfo.collider.name);
+            print("Target down hit: " + raysDict[0].hitInfo.collider.name);
         }
 
         //debug
-        foreach (OriginRay oRay in oRays)
+        foreach (OriginRay oRay in raysDict.Values)
         {
             Debug.DrawRay(oRay.ray.origin, oRay.ray.direction, Color.red);
         }
     }
 
-    public struct OriginRay
+    private void UpdateRays()
     {
-        public Direction direction;
+        //update rays
+        raysDict[Direction.Down] = new OriginRay(new Ray(targetMesh.position, -targetMesh.up));
+        //oRays[Direction.Right] = new OriginRay(Direction.Right, new Ray(targetMesh.position, targetMesh.right));
+        //oRays[Direction.Left] = new OriginRay(Direction.Left, new Ray(targetMesh.position, -targetMesh.right));
+        //oRays[Direction.Forward] = new OriginRay(Direction.Forward, new Ray(targetMesh.position, targetMesh.forward));
+        //oRays[Direction.Back] = new OriginRay(Direction.Back, new Ray(targetMesh.position, -targetMesh.forward));
+    }
+
+    public class OriginRay
+    {
         public Ray ray;
         public RaycastHit hitInfo;
 
-        public OriginRay(Direction direction, Ray ray)
+        public OriginRay(Ray ray)
         {
-            this.direction = direction;
             this.ray = ray;
 
             Physics.Raycast(this.ray, out hitInfo, 1);
         }
-    }
-
-    private void UpdateOriginRays()
-    {
-        //update rays
-        oRays[0] = new OriginRay(Direction.Down, new Ray(targetMesh.position, -targetMesh.up));
-        oRays[1] = new OriginRay(Direction.Right, new Ray(targetMesh.position, targetMesh.right));
-        oRays[2] = new OriginRay(Direction.Left, new Ray(targetMesh.position, -targetMesh.right));
-        oRays[3] = new OriginRay(Direction.Forward, new Ray(targetMesh.position, targetMesh.forward));
-        oRays[4] = new OriginRay(Direction.Back, new Ray(targetMesh.position, -targetMesh.forward));
     }
 }
