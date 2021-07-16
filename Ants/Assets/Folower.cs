@@ -5,7 +5,6 @@ using static Target;
 
 public class Folower : MonoBehaviour
 {
-    [SerializeField] Camera gameCamera;
     [SerializeField] Target target;
     [SerializeField] LayerMask groundMask;
     [SerializeField] Transform lookToTarget;

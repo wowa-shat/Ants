@@ -25,12 +25,11 @@ public class Target : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Ray mouseRay = gameCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit mouseRayHitInfo;
-
         //replace target
         if (Input.GetMouseButtonDown(0))
         {
+            Ray mouseRay = gameCamera.ScreenPointToRay(Input.mousePosition);
+            RaycastHit mouseRayHitInfo;
             if (Physics.Raycast(mouseRay, out mouseRayHitInfo, 1000, targetMask))
             {
                 transform.position = mouseRayHitInfo.point;
