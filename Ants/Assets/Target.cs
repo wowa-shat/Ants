@@ -7,7 +7,7 @@ public class Target : MonoBehaviour
 
     [SerializeField] Camera gameCamera;
     [SerializeField] Transform targetMesh;
-    [SerializeField] LayerMask mouseRayLayerMask;
+    [SerializeField] LayerMask targetMask;
 
     public Dictionary<Direction, OriginRay> raysDict { get; private set; } = new Dictionary<Direction, OriginRay>();
 
@@ -31,7 +31,7 @@ public class Target : MonoBehaviour
         //replace target
         if (Input.GetMouseButtonDown(0))
         {
-            if (Physics.Raycast(mouseRay, out mouseRayHitInfo, 1000, mouseRayLayerMask))
+            if (Physics.Raycast(mouseRay, out mouseRayHitInfo, 1000, targetMask))
             {
                 transform.position = mouseRayHitInfo.point;
                 pos = targetMesh.position;
