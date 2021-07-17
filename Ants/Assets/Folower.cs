@@ -18,13 +18,7 @@ public class Folower : MonoBehaviour
 
     float distanceToTarget;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         distanceToTarget = Vector3.Distance(transform.position, target.pos);
 
@@ -40,12 +34,12 @@ public class Folower : MonoBehaviour
         Debug.DrawRay(rayToTarget.origin, rayToTarget.direction * 100, Color.blue);
 
         Ray downRay = new Ray(transform.position, -transform.up);
-        if (Physics.Raycast(downRay, out downHitInfo, 1))
+        if (Physics.Raycast(downRay, out downHitInfo, 1, groundMask))
         {
             //if folower and target stay on same object
             //if (target.raysDict[Direction.Down].hitInfo.collider.Equals(downHitInfo.collider) && rayToTargetHitInfo.collider.Equals(target.targetCollider))
             //{
-                if (distanceToTarget > 0.5f)
+                if (distanceToTarget > 0.3f)
                 {
                     transform.position = nextStepHitInfo.point;
                 }
@@ -53,9 +47,9 @@ public class Folower : MonoBehaviour
             //}
 
             //rotates perpendicular to the ground
-            transform.rotation = Quaternion.FromToRotation(transform.up, downHitInfo.normal);
+            transform.rotation = Quaternion.FromToRotation(Vector3.up, downHitInfo.normal);
 
-            if(distanceToTarget > 0.5f)
+            if(distanceToTarget > 0.3f)
             {
                 //looks at the target on the x and z axes
                 Vector3 xzTargetPos = target.pos;

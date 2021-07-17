@@ -14,7 +14,6 @@ public class Target : MonoBehaviour
     public Vector3 pos { get; private set; }
     public Collider targetCollider { get; private set; }
 
-    // Start is called before the first frame update
     void Start()
     {
         UpdateRays();
@@ -22,7 +21,6 @@ public class Target : MonoBehaviour
         targetCollider = targetMesh.gameObject.GetComponent<BoxCollider>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         //replace target
