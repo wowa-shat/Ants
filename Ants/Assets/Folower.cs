@@ -49,13 +49,19 @@ public class Folower : MonoBehaviour
             //rotates perpendicular to the ground
             transform.rotation = Quaternion.FromToRotation(Vector3.up, downHitInfo.normal);
 
-            if(distanceToTarget > 0.3f)
-            {
-                //looks at the target on the x and z axes
-                Vector3 xzTargetPos = target.pos;
-                xzTargetPos.y = transform.position.y;
-                transform.LookAt(xzTargetPos);
-            }
+            Vector3 xzTargetPos = target.pos;
+            xzTargetPos.y = transform.position.y;
+            Vector3 relativePos = xzTargetPos - transform.position;
+
+            transform.rotation = Quaternion.LookRotation(relativePos);
+
+            //if (distanceToTarget > 0.3f)
+            //{
+            //    //looks at the target on the x and z axes
+            //    Vector3 xzTargetPos = target.pos;
+            //    xzTargetPos.y = transform.position.y;
+            //    transform.LookAt(xzTargetPos);
+            //}
 
             print("Ant down hit: " + downHitInfo.collider.name);
         }
