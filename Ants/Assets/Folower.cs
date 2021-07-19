@@ -9,7 +9,7 @@ public class Folower : MonoBehaviour
     [SerializeField] LayerMask groundMask;
     [SerializeField] Transform lookToTarget;
     [SerializeField] Transform nextStep;
-    [SerializeField] float nextStepAngle = 80f;
+    [SerializeField] Transform mesh;
 
     //hits info
     RaycastHit downHitInfo;
@@ -36,32 +36,22 @@ public class Folower : MonoBehaviour
         Ray downRay = new Ray(transform.position, -transform.up);
         if (Physics.Raycast(downRay, out downHitInfo, 1, groundMask))
         {
-            //if folower and target stay on same object
-            //if (target.raysDict[Direction.Down].hitInfo.collider.Equals(downHitInfo.collider) && rayToTargetHitInfo.collider.Equals(target.targetCollider))
-            //{
-                if (distanceToTarget > 0.3f)
-                {
-                    transform.position = nextStepHitInfo.point;
-                }
-                transform.position = new Vector3(transform.position.x, downHitInfo.point.y + (transform.localScale.y / 2) + 0.1f, transform.position.z);
-            //}
+            if (distanceToTarget > 0.5f)
+            {
+                transform.position = nextStepHitInfo.point;
+            }
+            transform.position = new Vector3(transform.position.x, downHitInfo.point.y + (transform.localScale.y / 2) + 0.1f, transform.position.z);
 
-            //rotates perpendicular to the ground
-            transform.rotation = Quaternion.FromToRotation(Vector3.up, downHitInfo.normal);
 
-            Vector3 xzTargetPos = target.pos;
-            xzTargetPos.y = transform.position.y;
-            Vector3 relativePos = xzTargetPos - transform.position;
-
-            transform.rotation = Quaternion.LookRotation(relativePos);
-
-            //if (distanceToTarget > 0.3f)
-            //{
-            //    //looks at the target on the x and z axes
-            //    Vector3 xzTargetPos = target.pos;
-            //    xzTargetPos.y = transform.position.y;
-            //    transform.LookAt(xzTargetPos);
-            //}
+            if (distanceToTarget > 0.5f)
+            {
+                Vector3 xzTargetPos = target.pos;
+                xzTargetPos.y = transform.position.y;
+                Vector3 relativePos = xzTargetPos - transform.position;
+                transform.rotation = Quaternion.LookRotation(relativePos);
+                //rotates perpendicular to the ground
+                mesh.rotation = Quaternion.FromToRotation(Vector3.up, downHitInfo.normal) * Quaternion.LookRotation(relativePos);
+            }
 
             print("Ant down hit: " + downHitInfo.collider.name);
         }
