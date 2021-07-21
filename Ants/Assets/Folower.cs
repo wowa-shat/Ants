@@ -50,7 +50,7 @@ public class Folower : MonoBehaviour
                 Vector3 relativePos = xzTargetPos - transform.position;
                 transform.rotation = Quaternion.LookRotation(relativePos);
                 //rotates perpendicular to the ground
-                mesh.rotation = Quaternion.FromToRotation(Vector3.up, downHitInfo.normal) * Quaternion.LookRotation(relativePos);
+                mesh.rotation = Quaternion.Lerp(mesh.rotation, Quaternion.FromToRotation(Vector3.up, downHitInfo.normal) * Quaternion.LookRotation(relativePos), 7*Time.deltaTime);
             }
 
             print("Ant down hit: " + downHitInfo.collider.name);
