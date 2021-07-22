@@ -9,14 +9,11 @@ public class Target : MonoBehaviour
     [SerializeField] Transform targetMesh;
     [SerializeField] LayerMask targetMask;
 
-    public Dictionary<Direction, OriginRay> raysDict { get; private set; } = new Dictionary<Direction, OriginRay>();
-
     public Vector3 pos { get; private set; }
     public Collider targetCollider { get; private set; }
 
     void Start()
     {
-        UpdateRays();
         pos = targetMesh.position;
         targetCollider = targetMesh.gameObject.GetComponent<BoxCollider>();
     }
@@ -33,43 +30,7 @@ public class Target : MonoBehaviour
                 transform.position = mouseRayHitInfo.point;
                 pos = targetMesh.position;
                 transform.rotation = Quaternion.FromToRotation(Vector3.up, mouseRayHitInfo.normal);
-
-                UpdateRays();
             }
-        }
-
-        if(Physics.Raycast(raysDict[Direction.Down].ray, out raysDict[Direction.Down].hitInfo))
-        {
-            print("Target down hit: " + raysDict[0].hitInfo.collider.name);
-        }
-
-        //debug
-        foreach (OriginRay oRay in raysDict.Values)
-        {
-            Debug.DrawRay(oRay.ray.origin, oRay.ray.direction, Color.red);
-        }
-    }
-
-    private void UpdateRays()
-    {
-        //update rays
-        raysDict[Direction.Down] = new OriginRay(new Ray(targetMesh.position, -targetMesh.up));
-        //oRays[Direction.Right] = new OriginRay(Direction.Right, new Ray(targetMesh.position, targetMesh.right));
-        //oRays[Direction.Left] = new OriginRay(Direction.Left, new Ray(targetMesh.position, -targetMesh.right));
-        //oRays[Direction.Forward] = new OriginRay(Direction.Forward, new Ray(targetMesh.position, targetMesh.forward));
-        //oRays[Direction.Back] = new OriginRay(Direction.Back, new Ray(targetMesh.position, -targetMesh.forward));
-    }
-
-    public class OriginRay
-    {
-        public Ray ray;
-        public RaycastHit hitInfo;
-
-        public OriginRay(Ray ray)
-        {
-            this.ray = ray;
-
-            Physics.Raycast(this.ray, out hitInfo, 1);
         }
     }
 }

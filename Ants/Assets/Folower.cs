@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Target;
 
 public class Folower : MonoBehaviour
 {
@@ -24,19 +23,18 @@ public class Folower : MonoBehaviour
 
         //next step raycast
         Ray nextStepRay = new Ray(nextStep.position, -nextStep.up);
-        Physics.Raycast(nextStepRay, out nextStepHitInfo, 1, groundMask);
         Debug.DrawRay(nextStepRay.origin, nextStepRay.direction, Color.green);
 
         //look to target ray
         lookToTarget.LookAt(target.pos);
         Ray rayToTarget = new Ray(lookToTarget.position, lookToTarget.forward);
-        Physics.Raycast(rayToTarget, out rayToTargetHitInfo);
+        //Physics.Raycast(rayToTarget, out rayToTargetHitInfo);
         Debug.DrawRay(rayToTarget.origin, rayToTarget.direction * 100, Color.blue);
 
         Ray downRay = new Ray(transform.position, -transform.up);
         if (Physics.Raycast(downRay, out downHitInfo, 1, groundMask))
         {
-            if (distanceToTarget > 0.5f)
+            if (distanceToTarget > 0.5f && Physics.Raycast(nextStepRay, out nextStepHitInfo, 1, groundMask))
             {
                 transform.position = nextStepHitInfo.point;
             }
@@ -50,16 +48,11 @@ public class Folower : MonoBehaviour
                 Vector3 relativePos = xzTargetPos - transform.position;
                 transform.rotation = Quaternion.LookRotation(relativePos);
                 //rotates perpendicular to the ground
-                mesh.rotation = Quaternion.Lerp(mesh.rotation, Quaternion.FromToRotation(Vector3.up, downHitInfo.normal) * Quaternion.LookRotation(relativePos), 7*Time.deltaTime);
+                mesh.rotation = Quaternion.Lerp(mesh.rotation, Quaternion.FromToRotation(Vector3.up, downHitInfo.normal) * Quaternion.LookRotation(relativePos), 8*Time.deltaTime);
             }
 
             print("Ant down hit: " + downHitInfo.collider.name);
         }
         Debug.DrawRay(downRay.origin, downRay.direction, Color.red);
-
-        //Ray forwardRay = new Ray(transform.position, transform.forward);
-        //RaycastHit forwardHitInfo;
-        //Physics.Raycast(forwardRay, out forwardHitInfo, 1);
-        //Debug.DrawRay(forwardRay.origin, forwardRay.direction, Color.red);
     }
 }
