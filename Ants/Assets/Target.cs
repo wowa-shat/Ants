@@ -21,7 +21,7 @@ public class Target : MonoBehaviour
     void Update()
     {
         //replace target
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             Ray mouseRay = gameCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit mouseRayHitInfo;
